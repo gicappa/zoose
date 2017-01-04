@@ -21,7 +21,7 @@
 
 #define FUSE_USE_VERSION 30
 
-#include <config.h>
+// #include <config.h>
 
 #include <fuse.h>
 #include <stdio.h>
@@ -30,9 +30,16 @@
 #include <fcntl.h>
 #include <stddef.h>
 #include <assert.h>
+#include <sys/time.h>
+#include <unistd.h>
+#include <sys/select.h>
+
+#include <zookeeper.h>
+#include <proto.h>
+#include <stdlib.h>
 
 static zhandle_t *zh;
-
+struct timeval startTime;
 
 void my_strings_completion(int rc, const struct String_vector *strings,
         const void *data) {
@@ -121,7 +128,7 @@ static int hello_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
 
 	filler(buf, ".", NULL, 0, 0);
 	filler(buf, "..", NULL, 0, 0);
-	int rc = zoo_aget_children2(zh, "/", 1, my_strings_stat_completion, strdup("/"));
+	int rc = zoo_aget_children2(zh, "/", 1, my_strings_completion, strdup("/"));
     if (rc) {
         fprintf(stderr, "Error %d for %s\n", rc, "/");
     }
