@@ -21,6 +21,7 @@
 
 #define FUSE_USE_VERSION 30
 
+#ifdef ,
 // #include <config.h>
 
 #include <fuse.h>
